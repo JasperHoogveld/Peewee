@@ -2,9 +2,9 @@ from peewee import *
 import os
 import sys
 
-#dbase = os.path.join(sys.path[0], 'test_db.db')
-#db = SqliteDatabase(dbase) 
-db = SqliteDatabase(":memory:") 
+dbase = os.path.join(sys.path[0], 'test_db.db')
+db = SqliteDatabase(dbase) 
+#db = SqliteDatabase(":memory:") 
 
 class BaseModel(Model):
     class Meta:
@@ -48,20 +48,34 @@ class DishIngredient(BaseModel):
 
 DishIngredient = Dish.ingredients.get_through_model()
 
+def init_tables():
+    #db.connect()
+    db.create_tables([Restaurant, Rating])
+    pizza_marios = Restaurant(name = "Marios", closing_time = '22:00', opening_time = '22:00', open_since = 2021)
+    pizza_marios.save()
+    pizza_luigi = Restaurant(name = "Luigi", closing_time = '22:00', opening_time = '22:00', open_since = 2021)
+    pizza_luigi.save()
+    marios = Rating(restaurant = pizza_marios, rating = 3)
+    marios2 = Rating(restaurant = pizza_marios, rating = 5)
+    luigi = Rating(restaurant = pizza_luigi, rating = 5)
+    luigi.save()
+    marios.save()
+    marios2.save()
+    #db.close()
 
-db.connect()
-db.create_tables([Restaurant, Rating])
-pizza_marios = Restaurant(name = "Marios", closing_time = '22:00', opening_time = '22:00', open_since = 2021)
-pizza_marios.save()
-marios = Rating(restaurant = pizza_marios, rating = 3)
-marios2 = Rating(restaurant = pizza_marios, rating = 5)
-marios.save()
-marios2.save()
+init_tables()
+
+# pizza_marios = Restaurant(name = "Marios", closing_time = '22:00', opening_time = '22:00', open_since = 2021)
+# pizza_marios.save()
+# marios = Rating(restaurant = pizza_marios, rating = 3)
+# marios2 = Rating(restaurant = pizza_marios, rating = 5)
+# marios.save()
+# marios2.save()
 # db.create_tables(Dish)
 # pizza = Dish(name="Pizza", served_at = "Marios", price_in_cents=895)
 # pizza.save()
 # pizza_large = Dish(name="Large Pizza", served_at = "Marios", price_in_cents=1295)
 # pizza_large.save()
-db.close()
-#print(marios.rating)
+# db.close()
+# print(marios.rating)
 
