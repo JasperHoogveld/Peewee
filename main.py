@@ -22,18 +22,16 @@ def vegetarian_dishes() -> List[Dish]:
     Query the database to return a list of dishes that contain only
     vegetarian ingredients.
     """
-    # query = []
-    # for dish in Dish.select(Dish, Ingredient).join(Dish.ingredients, 
-    #     on=(Ingredient.is_vegetarian)):
-    #     ingreds = []
-    #     for ingred in dish:
-    #         ingreds.append(ingred)
-    #         if all(ingreds.Ingredient.is_vegetarian):
-    #             query.append(dish)
+    query = Dish.select(Dish, Ingredient).join(Dish.ingredients, 
+        on=(Ingredient.is_vegetarian)).group_by(Dish.dish_id)
+    veg_list = []
+    for row in query:
+        if row.is_vegeterian and row.name not in veg_list:
+            veg_list.append(row.name)
+        elif not row.is_vegeterian and row.name not in veg_list:
+            veg_list.remove(row.name) 
 
-    #for dish in Dish.select(Dish, Ingredient).join()
-        
-    #return query
+    return veg_list
 
  
 def best_average_rating() -> Restaurant:
@@ -48,8 +46,7 @@ def best_average_rating() -> Restaurant:
     query = query.group_by(Rating.restaurant)
     query = query.order_by(fn.AVG(Rating.rating).desc())
     row = query.get()
-    row2 = query.get()
-    print(row2)
+
     return row.restaurant.name
 
 def add_rating_to_restaurant() -> None:
@@ -57,13 +54,14 @@ def add_rating_to_restaurant() -> None:
 
     Select the first restaurant in the dataset and add a rating
     """
-    query = Restaurant.select()
-    for restaurant in query:
-        restaurant.update({Restaurant.rating:0})
-        restaurant.execute()
-        break
-    return restaurant.rating
+    # query = Rating.select(Rating.restaurant, Rating.rating)
+    # firstRestaurant = query.get()
+    # firstRestaurant.update(rating = 1)
+    # firstRestaurant = firstRestaurant.order_by(fn.AVG(Rating.rating).alias("avg_rating"))
+    # firstRestaurant.save()
 
+    # return firstRestaurant.rating
+    
 
 def dinner_date_possible() -> List[Restaurant]:
     """You have asked someone out on a dinner date, but where to go?
